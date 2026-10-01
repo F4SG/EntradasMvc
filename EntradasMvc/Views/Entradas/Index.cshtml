@@ -1,4 +1,4 @@
-﻿@model EntradasMvc.Models.Cotizacion
+@model EntradasMvc.ViewModels.CotizacionInputViewModel
 
 @{
     ViewData["Title"] = "Cotizar entradas";
@@ -11,19 +11,33 @@
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="mb-3">
-        <label asp-for="Cliente" class="form-label"></label>
-        <input asp-for="Cliente" class="form-control" />
-        <span asp-validation-for="Cliente" class="text-danger"></span>
+        <label asp-for="Cliente"></label>
+        <input asp-for="Cliente" />
+        <span asp-validation-for="Cliente"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Cantidad" class="form-label"></label>
-        <input asp-for="Cantidad" class="form-control" />
-        <span asp-validation-for="Cantidad" class="text-danger"></span>
+        <label asp-for="Cantidad"></label>
+        <input asp-for="Cantidad" />
+        <span asp-validation-for="Cantidad"></span>
+    </div>
+
+   
+    <div class="mb-3">
+    <label asp-for="TipoEntrada"></label>
+    <select asp-for="TipoEntrada">
+            <option value="">--Seleccione--</option>
+            <option value="General">General</option>
+            <option value="VIP">VIP</option>
+            </select>
+    <span asp-validation-for="TipoEntrada"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Calcular</button>
+
+
 </form>
+
 
 
 

@@ -1,0 +1,85 @@
+﻿Respuestas - Practica ViewModels en ASP.NET Core MVC
+=====================================================
+
+1. Cual es la diferencia principal entre Model y ViewModel?
+
+El Model representa los datos del negocio y sus reglas, por ejemplo
+Cotizacion tiene la logica del descuento y el calculo del total.
+El ViewModel en cambio es una clase que se arma pensando en lo que
+necesita una vista especifica, ya sea para mostrar datos o para
+recibirlos desde un formulario. No tiene que coincidir con ninguna
+tabla de la base de datos.
+
+2. Como sabe una vista que tipo de ViewModel recibe?
+
+Por la directiva @model que se pone al principio del archivo .cshtml.
+Por ejemplo si escribis @model EntradasMvc.ViewModels.CotizacionInputViewModel
+la vista queda ligada a ese tipo y solo puede acceder a sus propiedades.
+Si intentas usar algo que no existe en ese tipo, te da error al compilar.
+
+3. Que funcion cumple Model Binding?
+
+Es lo que hace ASP.NET Core para tomar los datos que vienen del
+formulario (por HTTP POST) y llenarlos automaticamente en el objeto
+que recibe la accion del controlador. O sea, no tenes que leer
+manualmente cada campo del formulario, el framework se encarga de eso.
+
+4. Puede un ViewModel recibir datos desde el navegador? Explique.
+
+Si. En esta practica CotizacionInputViewModel recibe exactamente eso,
+los datos que el usuario ingreso en el formulario. Cuando el usuario
+hace click en Calcular, el navegador manda Cliente, Cantidad y TipoEntrada,
+y ASP.NET Core los coloca en el ViewModel mediante Model Binding.
+
+5. Que son las Data Annotations?
+
+Son atributos que se ponen sobre las propiedades de una clase para
+agregarles informacion extra. En el ViewModel de entrada se usan para
+validar los datos del formulario, por ejemplo [Required] indica que
+el campo es obligatorio, [Range] limita el valor a un rango y
+[Display] define el nombre que aparece en la interfaz.
+
+6. Por que Evento puede pertenecer al ViewModel de resultado y no
+necesariamente a Cotizacion?
+
+Porque Evento es un dato de presentacion, solo lo necesita la pantalla
+de resultado para mostrarle al usuario a que evento corresponde la
+cotizacion. No tiene ningun rol en los calculos del precio, el subtotal
+o el descuento, asi que no tiene sentido meterlo en el Model.
+
+7. Donde debe permanecer la regla del descuento y por que?
+
+En el Model, en la clase Cotizacion. Esa regla es logica de negocio,
+dice que si compras 5 o mas entradas tenes 10% de descuento. Eso no
+depende de ninguna vista ni de como se muestre el resultado, siempre
+aplica igual sin importar desde donde se use la cotizacion.
+
+8. Un ViewModel representa obligatoriamente una tabla de la base de datos?
+
+No. Un ViewModel es simplemente una clase pensada para una vista.
+Puede tener datos de varias fuentes o datos calculados que no existen
+en ninguna tabla. En esta practica ResultadoCotizacionViewModel combina
+la cotizacion con el nombre del evento y un mensaje, nada de eso es
+una tabla.
+
+9. Explique el recorrido completo desde que se pulsa Calcular hasta
+que aparece el resultado.
+
+El usuario llena el formulario y hace click en Calcular. El navegador
+hace un POST con los datos. ASP.NET Core recibe eso y usando Model
+Binding crea un objeto CotizacionInputViewModel con Cliente, Cantidad
+y TipoEntrada. El controlador verifica con ModelState.IsValid que
+los datos cumplan las validaciones. Si todo esta bien, crea un objeto
+Cotizacion pasandole esos datos, y Cotizacion calcula sola el Subtotal,
+el Descuento y el Total. Despues se arma el ResultadoCotizacionViewModel
+con la cotizacion y datos extra como el evento y el mensaje. Finalmente
+se devuelve la vista Resultado con ese ViewModel y el usuario ve el
+resultado en pantalla.
+
+10. Que ventaja tiene utilizar un ViewModel de entrada en un formulario?
+
+Que podes controlar exactamente que datos acepta ese formulario y
+agregar las validaciones que corresponden solo a esa pantalla, sin
+tocar el Model. Si el Model cambia internamente, el formulario no
+se ve afectado. Y si el formulario necesita validaciones especificas,
+las pones en el ViewModel sin mezclarlas con la logica de negocio.
